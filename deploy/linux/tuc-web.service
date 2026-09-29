@@ -1,0 +1,27 @@
+# Optional: running TUC on a Linux server instead of macOS.
+# Install: sudo cp deploy/linux/*.service deploy/linux/*.timer /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now tuc-web tuc-collector.timer tuc-process.timer
+[Unit]
+Description=TUC dashboard and API
+After=network-online.target mysql.service
+Wants=network-online.target
+Requires=mysql.service
+
+[Service]
+Type=simple
+User=tuc
+Group=tuc
+WorkingDirectory=/opt/tuc
+EnvironmentFile=/opt/tuc/.env
+ExecStart=/opt/tuc/.venv/bin/python -m app.cli serve --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/tuc/storage /opt/tuc/logs
+
+[Install]
+WantedBy=multi-user.target

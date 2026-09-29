@@ -1,0 +1,159 @@
+/* Design tokens — the single source of truth for colour, radius and type. */
+@import "@fontsource-variable/inter/index.css";
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/500.css";
+@import "@fontsource/ibm-plex-sans-arabic/600.css";
+@import "@fontsource/ibm-plex-sans-arabic/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Inter Variable", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --radius: 0.5rem;
+
+    /* neutral: zinc */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --sidebar: 240 5% 97.5%;
+    --sidebar-foreground: 240 5% 26%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 4% 40%;        /* AA on white and on muted */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 88%;
+
+    /* the single accent: deep teal/emerald */
+    --primary: 172 80% 25%;
+    --primary-foreground: 166 76% 97%;
+    --ring: 172 80% 30%;
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* semantic file states — used by badges, charts and filters alike */
+    --status-classified: 160 84% 30%;
+    --status-unclassified: 35 92% 38%;
+    --status-duplicate: 240 4% 46%;
+    --status-failed: 0 72% 48%;
+    --status-unsupported: 240 5% 64%;
+    --status-processing: 217 85% 50%;
+    --status-downloaded: 199 80% 38%;
+
+    --chart-1: 172 80% 28%;
+    --chart-2: 172 50% 45%;
+    --chart-3: 172 35% 62%;
+    --chart-4: 200 20% 55%;
+    --chart-5: 240 5% 70%;
+
+    /* categorical (identity) — validated palette, fixed order; content types only */
+    --cat-1: #2a78d6;
+    --cat-2: #eb6834;
+    --cat-3: #1baf7a;
+    --cat-4: #eda100;
+    --cat-5: #e87ba4;
+  }
+
+  .dark {
+    --background: 240 6% 6%;
+    --foreground: 0 0% 96%;
+    --card: 240 6% 8%;
+    --card-foreground: 0 0% 96%;
+    --popover: 240 6% 9%;
+    --popover-foreground: 0 0% 96%;
+    --sidebar: 240 6% 7%;
+    --sidebar-foreground: 240 5% 75%;
+    --muted: 240 4% 14%;
+    --muted-foreground: 240 5% 66%;
+    --secondary: 240 4% 14%;
+    --secondary-foreground: 0 0% 96%;
+    --accent: 240 4% 15%;
+    --accent-foreground: 0 0% 96%;
+    --border: 240 4% 16%;
+    --input: 240 4% 20%;
+
+    --primary: 168 70% 42%;
+    --primary-foreground: 170 80% 6%;
+    --ring: 168 70% 45%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --status-classified: 158 64% 48%;
+    --status-unclassified: 38 92% 55%;
+    --status-duplicate: 240 5% 62%;
+    --status-failed: 0 80% 64%;
+    --status-unsupported: 240 4% 46%;
+    --status-processing: 213 94% 64%;
+    --status-downloaded: 199 80% 60%;
+
+    --chart-1: 168 70% 45%;
+    --chart-2: 168 45% 35%;
+    --chart-3: 168 30% 26%;
+    --chart-4: 200 15% 45%;
+    --chart-5: 240 4% 35%;
+
+    --cat-1: #3987e5;
+    --cat-2: #d95926;
+    --cat-3: #199e70;
+    --cat-4: #c98500;
+    --cat-5: #d55181;
+  }
+
+  :root:lang(ar) {
+    --font-sans: "IBM Plex Sans Arabic", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Directional icons (arrows, chevrons) mirror in RTL. */
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

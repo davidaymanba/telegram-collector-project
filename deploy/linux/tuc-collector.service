@@ -1,0 +1,20 @@
+[Unit]
+Description=TUC collect run (triggered by tuc-collector.timer)
+After=network-online.target mysql.service
+Requires=mysql.service
+
+[Service]
+Type=oneshot
+User=tuc
+Group=tuc
+WorkingDirectory=/opt/tuc
+EnvironmentFile=/opt/tuc/.env
+ExecStart=/opt/tuc/.venv/bin/python -m app.cli collect --trigger cli
+# Exit code 75 = another job holds the lock; not a failure.
+SuccessExitStatus=75
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/tuc/storage /opt/tuc/logs
