@@ -104,6 +104,9 @@ class Collector:
         self.files = FileRepository(session)
         self.logs = ProcessingLogRepository(session)
         self.rate = RateLimiter(settings.telegram_request_delay_seconds, sleep)
+        # Nothing but documents is wanted → let Telegram filter server-side.
+        self.documents_only = (not settings.telegram_collect_photos
+                               and not settings.telegram_collect_text_messages)
 
     # ------------------------------------------------------------------ utils
     def _bump(self, key: str) -> None:
@@ -195,7 +198,8 @@ class Collector:
             try:
                 await self.rate.wait()
                 async for msg in self.gw.iter_messages(entity, min_id=ch.last_message_id,
-                                                       limit=remaining):
+                                                       limit=remaining,
+                                                       documents_only=self.documents_only):
                     if msg.id <= ch.last_message_id:
                         continue
                     if not await self.handle_message(ch, msg):
@@ -235,6 +239,8 @@ class Collector:
 
     async def handle_message(self, ch: Channel, msg: TgMessage) -> bool:
         """Returns False when the message must be retried on the next run."""
+        if msg.media_type == "photo" and not self.settings.telegram_collect_photos:
+            return True
         if msg.media_type not in ("document", "photo"):
             if msg.media_type == "none" and not self.settings.telegram_collect_text_messages:
                 return True

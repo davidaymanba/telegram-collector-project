@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import shutil
 import stat
+import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -148,6 +149,6 @@ def run_health_checks(settings: Settings, *, include_launchd: bool = True) -> li
         check_secret_permissions(settings),
         check_lock(settings),
     ]
-    if include_launchd:
+    if include_launchd and sys.platform == "darwin":
         checks.append(check_launchd(settings))
     return checks

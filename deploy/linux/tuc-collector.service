@@ -8,7 +8,6 @@ Type=oneshot
 User=tuc
 Group=tuc
 WorkingDirectory=/opt/tuc
-EnvironmentFile=/opt/tuc/.env
 ExecStart=/opt/tuc/.venv/bin/python -m app.cli collect --trigger cli
 # Exit code 75 = another job holds the lock; not a failure.
 SuccessExitStatus=75

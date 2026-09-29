@@ -80,8 +80,10 @@ def test_health_check_json(settings: Settings) -> None:
     r = runner.invoke(app, ["health-check", "--json"])
     assert r.exit_code == 0, r.output
     keys = {c["key"] for c in json.loads(r.stdout)}
-    assert {"mysql", "tesseract", "telegram", "openai", "storage", "permissions", "lock",
-            "launchd"} <= keys
+    expected = {"mysql", "tesseract", "telegram", "openai", "storage", "permissions", "lock"}
+    if sys.platform == "darwin":
+        expected.add("launchd")
+    assert expected <= keys
 
 
 def test_module_entrypoint_runs(settings: Settings) -> None:

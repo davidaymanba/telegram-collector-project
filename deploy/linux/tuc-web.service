@@ -12,7 +12,6 @@ Type=simple
 User=tuc
 Group=tuc
 WorkingDirectory=/opt/tuc
-EnvironmentFile=/opt/tuc/.env
 ExecStart=/opt/tuc/.venv/bin/python -m app.cli serve --host 127.0.0.1 --port 8000
 Restart=on-failure
 RestartSec=5

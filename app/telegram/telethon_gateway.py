@@ -9,6 +9,7 @@ from typing import Any
 from telethon import TelegramClient, errors
 from telethon.tl.types import (
     DocumentAttributeFilename,
+    InputMessagesFilterDocument,
     MessageMediaDocument,
     MessageMediaPhoto,
 )
@@ -105,12 +106,15 @@ class TelethonGateway:
         title = getattr(entity, "title", None) or getattr(entity, "first_name", "") or str(ref)
         return TgEntity(id=int(entity.id), title=title, username=getattr(entity, "username", None))
 
-    async def iter_messages(self, entity: TgEntity, *, min_id: int, limit: int | None
-                            ) -> AsyncIterator[TgMessage]:
+    async def iter_messages(self, entity: TgEntity, *, min_id: int, limit: int | None,
+                            documents_only: bool = False) -> AsyncIterator[TgMessage]:
         target: str | int = entity.username or entity.id
+        # Server-side filter: busy chat groups are >90% text, so asking Telegram for documents
+        # only avoids paging through hundreds of thousands of messages we would skip anyway.
+        msg_filter = InputMessagesFilterDocument if documents_only else None
         try:
             async for msg in self.client.iter_messages(target, min_id=min_id, reverse=True,
-                                                        limit=limit):
+                                                        limit=limit, filter=msg_filter):
                 if getattr(msg, "action", None) is not None:
                     continue  # service messages (pins, joins, …)
                 yield _to_tg_message(msg)

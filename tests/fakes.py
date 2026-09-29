@@ -35,6 +35,7 @@ class FakeGateway:
     fail_download: set[int] = field(default_factory=set)
     downloads: list[int] = field(default_factory=list)
     iter_calls: list[int] = field(default_factory=list)
+    documents_only_calls: list[bool] = field(default_factory=list)
     connected: bool = False
 
     def add(self, pair: tuple[TgMessage, bytes]) -> None:
@@ -54,12 +55,15 @@ class FakeGateway:
     async def resolve(self, ref: str | int) -> TgEntity:
         return TgEntity(id=4242, title="Fake channel", username=str(ref))
 
-    async def iter_messages(self, entity: TgEntity, *, min_id: int, limit: int | None
-                            ) -> AsyncIterator[TgMessage]:
+    async def iter_messages(self, entity: TgEntity, *, min_id: int, limit: int | None,
+                            documents_only: bool = False) -> AsyncIterator[TgMessage]:
         self.iter_calls.append(min_id)
+        self.documents_only_calls.append(documents_only)
         count = 0
         for msg in sorted(self.messages, key=lambda m: m.id):
             if msg.id <= min_id:
+                continue
+            if documents_only and msg.media_type != "document":
                 continue
             if msg.id in self.flood_on_iter_at:
                 raise FloodWaitError(self.flood_on_iter_at.pop(msg.id))

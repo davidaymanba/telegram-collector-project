@@ -64,6 +64,7 @@ class Settings(BaseSettings):
     telegram_session_path: Path = Path("storage/telegram/tuc")
     telegram_request_delay_seconds: float = Field(default=1.0, ge=0)
     telegram_collect_text_messages: bool = False
+    telegram_collect_photos: bool = True
     telegram_flood_max_retries: int = Field(default=3, ge=0)
     telegram_flood_max_wait_seconds: int = Field(default=900, ge=1)
 

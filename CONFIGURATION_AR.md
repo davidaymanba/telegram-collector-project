@@ -61,6 +61,7 @@ channels:
 | `TUC_TELEGRAM_SESSION_PATH` | `storage/telegram/tuc` | يُضاف له `.session` تلقائياً |
 | `TUC_TELEGRAM_REQUEST_DELAY_SECONDS` | `1.0` | أقل فاصل بين الطلبات (يقلل FloodWait) |
 | `TUC_TELEGRAM_COLLECT_TEXT_MESSAGES` | `false` | حفظ الرسائل النصية بدون ملفات أيضاً |
+| `TUC_TELEGRAM_COLLECT_PHOTOS` | `true` | `false` = الملفات فقط (PDF/Word/PowerPoint). مع تعطيل الرسائل النصية أيضاً، يطلب الجامع المستندات فقط من تليجرام مباشرة، وهذا أسرع بكثير في جروبات النقاش |
 
 ### التخزين
 | المتغير | الافتراضي |

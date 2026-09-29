@@ -37,6 +37,7 @@ SECTIONS: dict[str, list[str]] = {
     "database": ["database_url", "test_database_url"],
     "telegram": ["telegram_api_id", "telegram_api_hash", "telegram_session_path",
                  "telegram_request_delay_seconds", "telegram_collect_text_messages",
+                 "telegram_collect_photos",
                  "telegram_flood_max_retries", "telegram_flood_max_wait_seconds"],
     "storage": ["storage_root", "incoming_storage_dir", "processed_storage_dir",
                 "unclassified_storage_dir", "texts_storage_dir", "lock_file_path",

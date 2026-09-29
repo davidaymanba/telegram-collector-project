@@ -236,3 +236,30 @@ def test_download_is_confined_to_storage(settings: Settings, db: Session, channe
     [f] = files(db)
     assert Path(f.storage_path or "").resolve().is_relative_to(settings.storage_root.resolve())
     assert os.path.basename(f.storage_path or "") == f"{channel.id}_1_evil.pdf"
+
+
+def photo_msg(msg_id: int) -> tuple[TgMessage, bytes]:
+    return TgMessage(id=msg_id, date=datetime(2026, 9, 1, tzinfo=UTC), media_type="photo",
+                     document_id=90_000 + msg_id, file_name=f"photo_{msg_id}.jpg",
+                     mime_type="image/jpeg", size=3), b"jpg"
+
+
+def test_photos_skipped_and_documents_filtered_server_side(settings: Settings, db: Session,
+                                                          channel: Channel) -> None:
+    settings.telegram_collect_photos = False
+    gw = FakeGateway()
+    gw.add(photo_msg(1))
+    gw.add(doc_msg(2, "lecture.pdf", b"pdf"))
+    gw.messages.append(TgMessage(id=3, date=datetime.now(UTC), text="chat"))
+    run_collect(settings, db, gw)
+    assert gw.documents_only_calls == [True]
+    assert gw.downloads == [2]
+    assert [f.original_filename for f in files(db)] == ["lecture.pdf"]
+
+
+def test_photos_collected_by_default(settings: Settings, db: Session, channel: Channel) -> None:
+    gw = FakeGateway()
+    gw.add(photo_msg(1))
+    run_collect(settings, db, gw)
+    assert gw.documents_only_calls == [False]
+    assert gw.downloads == [1]
