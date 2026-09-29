@@ -1,0 +1,16 @@
+# Example channel list (imported with: python -m app.cli import-config).
+# After import the database is the source of truth — manage channels from the dashboard.
+#
+# Each channel needs a `username` (public @handle, without @) or a numeric `telegram_id`
+# (for private channels; e.g. -1001234567890). The Telegram account used by
+# `telegram-login` must be a member of every channel listed here.
+#
+# name      : display name in the dashboard
+# enabled   : only enabled channels are collected
+channels:
+  - name: "دفعة علوم الحاسب"
+    username: "example_cs_channel"
+    enabled: false          # replace with a real channel, then set to true
+  # - name: "Private course group"
+  #   telegram_id: -1001234567890
+  #   enabled: true

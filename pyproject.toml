@@ -1,0 +1,104 @@
+[project]
+name = "tuc"
+version = "1.0.0"
+description = "Telegram University Content Collector — collects, deduplicates, extracts and classifies course files from Telegram channels."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.1",
+    "alembic>=1.13",
+    "pymysql>=1.1",
+    "cryptography>=42",
+    "telethon>=1.36,<2",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pyyaml>=6.0",
+    "pymupdf>=1.24",
+    "python-docx>=1.1",
+    "python-pptx>=0.6.23",
+    "pytesseract>=0.3.10",
+    "pillow>=10.3",
+    "openai>=1.40",
+    "structlog>=24.1",
+    "typer>=0.12",
+    "rich>=13.7",
+    "argon2-cffi>=23.1",
+    "itsdangerous>=2.2",
+    "python-multipart>=0.0.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "httpx>=0.27",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "types-PyYAML>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["frontend", "app/database/migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "N", "S", "C4", "PTH", "TID"]
+ignore = [
+    "S101",   # assert is fine in tests
+    "S603",   # subprocess calls use fixed argv lists, never shell=True
+    "S607",   # launchctl/open/tesseract are resolved from PATH on purpose
+    "RUF001", "RUF002", "RUF003",  # Arabic text contains ambiguous-looking unicode by design
+    "B008",   # FastAPI/Typer default-argument idiom
+    "UP046", "UP047",  # Generic[T] reads fine and keeps pydantic generics explicit
+    "PTH101", # os.chmod on paths/fds is clearer for permission bits
+]
+
+[tool.ruff.lint.per-file-ignores]
+"app/ingestion/seed.py" = ["S311"]
+"tests/**" = ["S105", "S106", "S108", "S311", "PTH", "N802"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
+exclude = ["frontend/", "app/database/migrations/versions/"]
+
+[[tool.mypy.overrides]]
+module = ["telethon.*", "pytesseract.*", "fitz.*", "pymupdf.*", "docx.*", "pptx.*", "argon2.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+disallow_untyped_calls = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "ocr: requires tesseract with ara+eng language data",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:telethon.*",
+    "ignore::DeprecationWarning:pptx.*",
+    "ignore::DeprecationWarning:docx.*",
+    "ignore:builtin type Swig:DeprecationWarning",
+    "ignore:builtin type swigvarlink:DeprecationWarning",
+]
+
+[[tool.mypy.overrides]]
+# PyMuPDF ships partial annotations; its untyped calls are wrapped in typed helpers.
+module = ["app.processing.extractors.pdf", "app.ingestion.seed"]
+disallow_untyped_calls = false

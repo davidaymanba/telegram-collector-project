@@ -1,0 +1,15 @@
+# Seed list of subjects (imported with: python -m app.cli import-config).
+# After import the database is the source of truth — edit subjects from the dashboard.
+#
+# code      : short unique code (letters/digits/-/_), used as the folder name in storage/processed
+# name_ar   : Arabic name        name_en: English name
+# keywords  : extra words that identify the subject in file names, captions or text (ar/en)
+subjects:
+  - code: DB101
+    name_ar: "قواعد البيانات"
+    name_en: "Database"
+    keywords: ["database", "sql", "قواعد بيانات", "ERD"]
+  - code: CS101
+    name_ar: "مقدمة علوم الحاسب"
+    name_en: "Introduction to Computer Science"
+    keywords: ["intro to cs", "مقدمة حاسب", "algorithms"]

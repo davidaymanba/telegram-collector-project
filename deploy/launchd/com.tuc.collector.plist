@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. Generated and installed by: python -m app.cli launchd install
+     StartInterval = TUC_COLLECT_INTERVAL_MINUTES * 60. If the Mac was asleep when an interval
+     fired, launchd runs the job once on wake; the file lock prevents overlapping runs. -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tuc.collector</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{PYTHON}}</string>
+        <string>-m</string>
+        <string>app.cli</string>
+        <string>collect</string>
+        <string>--trigger</string>
+        <string>launchd</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>{{PROJECT_DIR}}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>{{PATH}}</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+    <key>StartInterval</key>
+    <integer>{{INTERVAL_SECONDS}}</integer>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>LowPriorityIO</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>{{LOG_DIR}}/collector.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{LOG_DIR}}/collector.err.log</string>
+</dict>
+</plist>

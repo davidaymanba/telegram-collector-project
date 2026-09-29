@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Template. Generated and installed by: python -m app.cli launchd install -->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.tuc.web</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{PYTHON}}</string>
+        <string>-m</string>
+        <string>app.cli</string>
+        <string>serve</string>
+        <string>--host</string>
+        <string>{{HOST}}</string>
+        <string>--port</string>
+        <string>{{PORT}}</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>{{PROJECT_DIR}}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>{{PATH}}</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+    <key>ProcessType</key>
+    <string>Background</string>
+    <key>StandardOutPath</key>
+    <string>{{LOG_DIR}}/web.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{LOG_DIR}}/web.err.log</string>
+</dict>
+</plist>
